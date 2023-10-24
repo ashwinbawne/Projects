@@ -1,0 +1,426 @@
+﻿@model EmployeeRegistration.Models.Emp
+<script src="~/js/JavaScript.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<h1>Edit</h1>
+
+<h4>Employee</h4>
+@{
+    var HobbyList = ViewBag.Hobbies as List<string>;
+    var AvailableStates = ViewBag.States as List<SelectListItem>;
+}
+
+@* @{
+    // Set the selected state and city using Razor syntax
+    var selectedState = Model.StateID;
+    var selectedCity = Model.CityID;
+} *@
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" id="editf">
+            <input asp-for="Id" value="@Model.Id" class="form-control" hidden />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Firstname" class="control-label">
+                    First Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Firstname" class="form-control"  />
+                <span asp-validation-for="Firstname" class="text-danger" id="Firstname"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="Lastname" class="control-label">
+                    Last Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Lastname" class="form-control"  />
+                <span asp-validation-for="Lastname" class="text-danger" id="Lastname"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="Dateofbirth" class="control-label">
+                    DateofBirth <span class="text-danger">*</span>
+                </label>
+                <input id="DateOfbirth" type="date" asp-for="Dateofbirth" class="form-control"  />
+                <span asp-validation-for="Dateofbirth" class="text-danger" id="Dateofbirth"></span>
+            </div>
+            <br>
+
+            <div>
+                <label asp-for="Hobbies" class="control-label" id="euform4">Hobbies <span class="text-danger">*</span></label> <br>
+                @foreach (var hobby in ViewBag.Hobbies)
+                {
+
+                    <input type="checkbox" name="Hobbie" value="@hobby "
+                    @(ViewBag.SelectedHobbies != null && ViewBag.SelectedHobbies.Contains(hobby) ? "checked" : "") />
+                    @hobby
+
+
+                }
+            </div>
+
+            <br>
+
+
+
+
+
+
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label" >
+                    Gender <span class="text-danger">*</span>
+                </label>
+                <br>
+                <label id="Gender">
+                    @Html.RadioButtonFor(model => model.Gender, "Male") Male
+                </label>
+                <label id="Gender">
+                    @Html.RadioButtonFor(model => model.Gender, "Female") Female
+                </label>
+                <span asp-validation-for="Gender" text-danger" id="Gender"></span>
+            </div>
+
+            <br>
+
+            <div>
+                <label class="control-label">State</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <select id="SelectedStateEdit" asp-for="StateID" asp-items="AvailableStates" name="State">
+                    <option value="">--select state--</option>
+                </select><br />
+                <span asp-validation-for="State" class="text-danger" id="State"></span>
+            </div>
+            <br>
+            <div>
+                <label class="control-label">City</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <select id="cityDropdownEdit" asp-for="CityID" style="width:140px" name="City">
+                    <option value="">--select city--</option>
+                </select><br />
+                <span asp-validation-for="City" class="text-danger" id="City"></span>
+                <input type="hidden" asp-for="CityID" />
+            </div>
+
+
+
+            
+
+
+
+
+
+            
+
+            <div class="form-group">
+                <label asp-for="FormImageFile">Select an image:</label>
+                <input type="file" id="fileImage" asp-for="FormImageFile" accept=".jpg, .png">
+                
+                <img src="@Model.UploadImage" id="UploadImage" style="height:100px; width:100px;" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FormPdfFile">Select a PDF:</label>
+                <input type="file" id="filePdf" asp-for="FormPdfFile" accept=".pdf">
+                <img src="@Model.UploadPdf" id="UploadPdf" style="height:100px; width:100px;" />
+              @*   <img src="@Model.UploadPdf" id="UploadPdf" src="@Url.Action("GetPdf", "Emp", new { fileName = Model.UploadPdf })" style="height:100px; width:100px;" /> *@
+            </div>
+
+
+
+
+
+
+            <br><br>
+
+            <div class="form-group">
+                <button type="button" id="updatebtn" data-id="id" class="btn btn-primary">Update</button>
+
+                <button type="button" id="resetButton" onclick="resetdata()" class="btn btn-primary">Reset</button>
+
+              @*   <button type="button" id="clearButton1" @* onclick="cleardata()" * class="btn btn-primary">Clear</button> *@
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+        $("#Dateofbirth").on("input", function () {
+            var selectedDate = new Date($(this).val());
+            var today = new Date();
+            var minDate = new Date();
+            minDate.setFullYear(today.getFullYear() - 100);
+            debugger
+            if (selectedDate > today) {
+                alert("Doesn't Exist");
+                $(this).val("");
+            } else if (selectedDate < minDate) {
+                alert(" Exist");
+                $(this).val("");
+            }
+
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#updatebtn').on('click', function () {
+            
+            $('#UploadImage').remove();
+            $('#UploadPdf').remove();
+            $('input[name="Gender"]').prop('checked', false);
+            $('#Dateofbirth').val();
+
+
+
+
+
+        });
+    });
+</script>
+
+
+
+<script>
+   
+    var originalFormValues = { };
+
+   
+    function storeOriginalValues() {
+        originalFormValues.Firstname = $("#Firstname").val();
+        originalFormValues.Lastname = $("#Lastname").val();
+        originalFormValues.Dateofbirth = $("#Dateofbirth").val();
+        originalFormValues.State = $("#SelectedStateEdit").val();
+        originalFormValues.City = $("#cityDropdownEdit").val();
+        originalFormValues.UploadImage = $("#UploadImage").val();
+        originalFormValues.UploadPdf = $("#UploadPdf").val();
+      
+ 
+
+        
+        originalFormValues.Hobbies = {};
+        $("input[name^='Hobbies[']").each(function () {
+            originalFormValues.Hobbies[$(this).attr("value")] = $(this).is(":checked");
+        });
+
+      
+    }
+
+    
+    function resetdata() {
+        $("#Firstname").val(originalFormValues.Firstname);
+        $("#Lastname").val(originalFormValues.Lastname);
+        $("#Dateofbirth").val(originalFormValues.Dateofbirth);
+        $("#SelectedStateEdit").val(originalFormValues.State);
+        $("#cityDropdownEdit").val(originalFormValues.City);
+        $("#UploadImage").val(originalFormValues.UploadImage);
+        $("#UploadPdf").val(originalFormValues.UploadPdf);
+        
+
+        
+        $("input[name^='Hobbies[']").each(function () {
+            var hobbyValue = $(this).attr("value");
+            $(this).prop('checked', originalFormValues.Hobbies[hobbyValue]);
+        });
+
+        
+        $("#selectedImage").attr("src", "").hide();
+
+       
+        $("#UploadImage").val("");
+        $("#UploadPdf").val("");
+
+       
+        $(".text-danger").text("");
+
+        
+
+        return false; 
+    }
+
+    
+    $(document).ready(function () {
+        storeOriginalValues();
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+       
+        debugger;
+        $('#SelectedStateEdit').on('change', function () {
+            var stateId = this.value;
+            var cityDropdown = $('#cityDropdownEdit');
+            cityDropdown.empty();
+            cityDropdown.append($('<option>', {
+                value: '',
+                text: '---select city----'
+            }));
+
+            if (stateId) {
+                $.ajax({
+                    url: `/Employee/GetCitiesById?stateId=${stateId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (cities) {
+                        cities.forEach(function (city) {
+                            cityDropdown.append($('<option>', {
+                                value: city.cityID,
+                                text: city.cityName
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error here
+                        console.error(error);
+                    }
+                       
+                });
+            }
+        });
+
+        $('#SelectedStateEdit').trigger('change');
+    });
+</script>
+
+@try
+{
+    <script>
+        function GetCityByID() {
+            debugger;
+            console.log('GetCityByID function called');
+            debugger;
+            var select = document.getElementById('SelectedStateEdit');
+            stateId = @Model.State;
+            var cityDropdown = document.getElementById('cityDropdownEdit'); // Declare cityDropdown here
+            cityDropdown.innerHTML = '';
+
+            if (stateId) {
+                $.ajax({
+                    url: `/Employee/GetCitiesById?stateId=${stateId}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (cities) {
+                        cities.forEach(city => {
+                            var option = document.createElement('option');
+                            option.value = city.CityID;
+                            option.innerText = city.CityName;
+                            cityDropdown.appendChild(option);
+                        });
+
+                        // Call k1() here with cityDropdown as an argument
+                        k1(cityDropdown);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        }
+
+        function k1(cityDropdown) {
+            for (var i = 0; i < cityDropdown.length; i++) {
+                if (cityDropdown[i].value == @Model.CityID) {
+                    console.log(cityDropdown[i].value);
+                    cityDropdown[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+    </script>
+}
+catch
+{
+    
+}
+
+
+@*  @try
+{
+
+    <script>
+        function GetCityByID() {
+            debugger;
+            console.log('GetCityByID function called');
+            debugger;
+            var select = document.getElementById('SelectedStateEdit');
+            stateId = @Model.State;
+            var cityDropdown = document.getElementById('cityDropdownEdit');
+            cityDropdown.innerHTML = '';
+
+            if (stateId) {
+                $.ajax({
+                    url: `/Employee/GetCitiesById?stateId=${stateId}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (cities) {
+                        cities.forEach(city => {
+                            var option = document.createElement('option');
+                            option.value = city.CityID;
+                            option.innerText = city.CityName;
+                            cityDropdown.appendChild(option);
+
+                        });
+                        if (Model && Model.CityID) {
+                            k1();
+                        } else {
+
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        }
+        function k1() {
+            for (var i = 0; i < cityDropdown.length; i++) {
+                if (cityDropdown[i].value == @Model.CityID) {
+                    console.log(cityDropdown[i].value);
+                    cityDropdown[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+        setTimeout(k1, 1000);
+
+
+    </script>
+
+
+
+
+}
+catch
+{
+
+} *@
+  
+
+
+
+
+
+
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

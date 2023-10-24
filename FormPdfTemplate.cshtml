@@ -1,0 +1,32 @@
+﻿@page
+@model Emp
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Form Data:</h1>
+    </header>
+    <section>
+        <p>First Name: @Model.Firstname</p>
+        <p>Last Name: @Model.Lastname</p>
+        <p>Date of Birth: @Model.Dateofbirth</p>
+        <p>Hobbies: @string.Join(", ", Model.Hobbie)</p>
+        <p>Gender: @Model.Gender</p>
+        <p>State: @Model.State</p>
+        <p>City: @Model.City</p>
+    </section>
+    <footer>
+        <div class='container terms page-break'>
+            <h2>Terms and Conditions</h2>
+            <p>Privacy: The information provided in this form will be used solely for the purpose of [Specify the purpose, e.g., employment consideration]. Your data will be handled confidentially and in accordance with applicable privacy laws.</p>
+            <!-- Add your terms and conditions content here -->
+        </div>
+    </footer>
+</body>
+</html>
